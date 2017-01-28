@@ -122,6 +122,52 @@
 - working with detached objects:
     - reattaching:
         - a modified detached instance:
+            - `update()` is reattaching the detached instance to the new `Session` (and persistence context);
+            - `select-before-update="true"` to turn on comparing the object’s current state to the current database
+            state;
         - an unmodified detached instance:
+            - `lock()` guarantees that the object’s state changes from detached to persistent and will be managed again;
     - making a detached object transient:
+        - `delete()` deletes its persistent state from the database:
+            - reattaches the object to the Session;
+            - schedules the object for deletion, executed on `commit()`;
     - merging the state of a detached object:
+        - `merge()`:
+            - checks whether a persistent instance in the persistence context has the same database identifier
+            as the detached instance you’re merging;
+            - if there is an equal persistent instance copies the state of the detached instance onto the
+            persistent instance;
+            - if there is no equal persistent instance in the persistence context, loads it from the database, merges 
+            the detached state with the retrieved object’s state;
+            - if there is no equal persistent instance in the persistence context, and a lookup in
+            the database yields no result, a new persistent instance is created, and the state of
+            the merged instance is copied onto the new instance and returned by the `merge()`;
+- managing the persistence context:
+    - controlling the persistence context cache:
+        - keep the size of your persistence context to the necessary minimum;
+        - call `session.evict(o)` to detach a persistent instance manually from the cache;
+        - call `session.clear()` to detach all persistent instances from the context;
+        - `session.setReadOnly(object, true)` to disable dirty checking for a particular instance;
+    - flushing the persistence context:
+        - changes aren’t immediately propagated to the database;
+        - flushing occurs at the following times:
+            - a `Transaction` is committed;
+            - before a query is executed (only if changes are held in memory that would **affect the results**
+            of the query); 
+            - `session.flush()`;
+    - you can control `FlushMode` via `session.setFlushMode()`:
+        - `FlushMode.COMMIT` - only on `transaction.commit()`;
+        - `FlushMode.MANUAL` - only on `session.flush()`;
+        - `FlushMode.ALWAYS` - always unnecessary and inefficient;
+        - `FlushMode.AUTO` - the default mode;
+        
+# Transactions and concurrency
+
+## Transaction essentials
+
+- if only one step fails, **the whole unit** of work must fail;
+- all operations are executed as *an atomic unit*;
+- *consistency* means that a transaction works on a **consistent** set of data;
+
+
+    

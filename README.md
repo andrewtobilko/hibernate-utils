@@ -155,19 +155,40 @@
             - before a query is executed (only if changes are held in memory that would **affect the results**
             of the query); 
             - `session.flush()`;
-    - you can control `FlushMode` via `session.setFlushMode()`:
-        - `FlushMode.COMMIT` - only on `transaction.commit()`;
-        - `FlushMode.MANUAL` - only on `session.flush()`;
-        - `FlushMode.ALWAYS` - always unnecessary and inefficient;
-        - `FlushMode.AUTO` - the default mode;
+    - you can control `FlushMode` via `session.setFlushMode(FlushMode)`:
+        - `COMMIT` - only on `transaction.commit()`;
+        - `MANUAL` - only on `session.flush()`;
+        - `ALWAYS` - always unnecessary and inefficient;
+        - `AUTO` - the default mode;
         
 # Transactions and concurrency
 
 ## Transaction essentials
 
-- if only one step fails, **the whole unit** of work must fail;
-- all operations are executed as *an atomic unit*;
-- *consistency* means that a transaction works on a **consistent** set of data;
+- **Atomicity** - all operations are executed as *an atomic unit*, if only one step fails, *the whole unit* of work
+must fail;
+- **Consistency** means that a transaction works on a **consistent** set of data;
+- **Isolation** - a particular transaction should not be visible to other concurrently running transactions;
+- **Durability** means that once a transaction completes, all changes made during that transaction become persistent and
+aren’t lost even if the system subsequently fails;
 
 
+### Database and system transactions
+
+- a unit of work is a database transaction;
+- a transaction is guaranteed to end in one of two ways:
+    - is committed;
+    - is rolled back;
+-  transaction demarcation:
+    - programmatic:
+        - `java.sql.Connection` - a plain JDBC API, do not use;
+        - `org.hibernate.Transaction` - Hibernate API which is tight with persistence context management;
+        - `javax.transaction.UserTransaction` - a part of JTA, is used when there is a JTA-compatible transaction service;
+        - `javax.persistence.EntityTransaction` - if JPA is use stand-alone, to demarcate the transaction yourself;
+    - declarative:
+        -  solves the problem of portability;
+        
+### Transactions in a Hibernate application
+
+- a JDBC Connection from the connection pool is obtained only when the database transaction begins;
     

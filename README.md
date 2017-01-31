@@ -191,4 +191,41 @@ aren’t lost even if the system subsequently fails;
 ### Transactions in a Hibernate application
 
 - a JDBC Connection from the connection pool is obtained only when the database transaction begins;
+- handling exceptions:
+    - checked exceptions <3 make no sense because they are fatal, a developer can do nothing;
+    - unchecked exceptions >3: `HibernateException`, `JDBCException` and other more meaningful subclasses;
     
+## Controlling concurrent access
+    
+- *transaction isolation* - from the point of view of each concurrent transaction, it appears that no other transactions
+are in progress;
+- applications inherit the isolation guarantees provided by the database management system;
+- it has been implemented with:
+    - locking;
+    - multiversion concurrency control;
+- database-level concurrency:
+    - a *lost update* occurs if two transactions both update a row and then the second transaction aborts, causing both
+    changes to be lost;
+    - a *dirty read* occurs if a one transaction reads changes made by another transaction that has not yet been
+    committed (may later be rolled back);
+    - an *unrepeatable read* occurs if a transaction reads a row twice and reads different state each time (another
+    transaction may have committed between the two reads);
+    - the *second lost updates problem* - two concurrent transactions both read a row: one writes to it and
+    commits, and then the second writes to it and commits; the changes made by the first writer are lost;
+    - a *phantom read* occurs when a transaction executes a query twice, and the result sets are different (is caused by
+    another transaction inserting or deleting rows between the execution of the two queries);
+- ANSI transaction isolation levels:
+    - *read uncommitted isolation*:
+        - any transaction may read any row;
+        - one transaction can write to a row;
+    - *read committed transaction isolation*:
+        - reading transactions don’t block other transactions;
+        - an uncommitted writing transaction blocks all other transactions from accessing the row;
+    - *repeatable read isolation*:
+        - writing transactions block all other transactions;
+        - reading transactions block writing transactions;
+    - *serializable provides the strictest transaction isolation. This isolation level
+       emulates serial transaction execution*:
+        -
+    
+ 

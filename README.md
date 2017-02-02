@@ -218,14 +218,50 @@ are in progress;
     - *read uncommitted isolation*:
         - any transaction may read any row;
         - one transaction can write to a row;
-    - *read committed transaction isolation*:
+    - *read committed isolation*:
         - reading transactions don’t block other transactions;
         - an uncommitted writing transaction blocks all other transactions from accessing the row;
     - *repeatable read isolation*:
         - writing transactions block all other transactions;
         - reading transactions block writing transactions;
-    - *serializable provides the strictest transaction isolation. This isolation level
-       emulates serial transaction execution*:
-        -
-    
- 
+    - *serializable* provides the strictest transaction isolation and emulates serial transaction execution;
+- choosing an isolation level:
+    - eliminate the read uncommitted isolation (using one transaction’s uncommitted changes in a different transaction);
+    - most applications don’t need serializable isolation;
+    - a choice between read committed and repeatable read:
+        - read committed eliminates the possibility that one transaction can overwrite changes made by another concurrent
+        transaction;
+        - repeatable read provides more reproducibility for query result sets;
+    - setting an isolation level:
+        - Hibernate sets this isolation level on every JDBC connection obtained from a connection pool before starting a
+        transaction;
+        - `hibernate.connection.isolation` (1, 2, 4, 8 respectively)
+- *optimistic* concurrency control:
+    - always assumes that everything will be OK and that conflicting data modifications are rare;
+    - three choices for how to deal with lost updates:
+        - *last commit wins* (default) — both transactions commit successfully, and the second commit overwrites the changes
+        of the first. No error message is shown;
+        - *first commit wins* — the transaction of conversation A is committed, and the user committing the transaction in
+        conversation B gets an error message. The user must restart the conversation by retrieving fresh data and go through all
+        steps of the conversation again with non-stale data;
+        - *merge conflicting updates* - the first modification is committed, and the transaction in conversation B aborts with an
+        error message when it’s committed. The user of the failed conversation B may however apply changes selectively, instead of
+        going through all the work in the conversation again;
+    - enabling versioning:
+        - `<version name="version" access="field" column="OBJ_VERSION"/>` (recommended)
+        - `<timestamp name="lastUpdated" access="field" column="LAST_UPDATED"/>`:
+            - a JVM usually doesn’t have millisecond accuracy;
+            - isn’t necessarily safe in a clustered environment, where nodes may not be time synchronized;
+        - `optimistic-lock="all"` based on *DIRTY* or *ALL* fields for an expanded WHERE clause restriction;
+- *pessimistic* locking:
+    - `lock`, `get` with `LockMode`:
+        - `NONE` - don’t go to the database unless the object isn’t in any cache;
+        - `READ` - bypass all caches, and perform a version check to verify that the object in memory is the same version that
+        currently exists in the database;
+        - `UPDGRADE` - bypass all caches, do a version check, and obtain a database-level pessimistic upgrade lock;
+        - `UPDGRADE_NOWAIT` uses a `SELECT ... FOR UPDATE NOWAIT`, if supported;
+        - `FORCE` forces an increment of the objects version in the database, to indicate that it has been modified by the
+        current transaction;
+        
+## Non-transactional data access
+

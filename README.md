@@ -265,3 +265,9 @@ are in progress;
         
 ## Non-transactional data access
 
+- In autocommit mode, a database transaction begins and ends for each SQL statement you send to the database;
+- the autocommit mode has no place in an application;
+- no SQL statement can be send to a database outside of a database transaction;
+- non-transactional data access means there are no explicit transaction boundaries;
+
+

@@ -1,3 +1,32 @@
+## Microservices
+
+### Monolithic Hell
+
+- [+] is simple to develop;
+- [+] easy to test;
+- [-] slows down development due to frequent restarts;
+- [-] you must redeploy the entire application in order to update any one part of it;
+- [-] can also be difficult to scale when different modules have conflicting resource requirements;
+- [-] reliability:  a bug in any module can potentially bring down the entire process;
+- [-] is difficult to adopt new frameworks and languages;
+
+### Microservices
+
+- [+] it tackles the problem of complexity (decomposes into a set of services);
+- [+] services are much faster to develop;
+- [+] services are much easier to understand and maintain;
+- [+] enables each service to be scaled independently;
+- [+] enables each microservice to be deployed independently;
+- [-] you need to choose and implement an inter-process communication mechanism;
+- [-] the partitioned database architecture;
+- [-] hard to test;
+- [-] implementing changes that span multiple services;
+- [-] deploying is much more complex;
+
+## API Gateway
+
+// todo
+
 ## Service Discovery
 
 - service instances have dynamically assigned network locations;
@@ -103,3 +132,9 @@ persistence approach):
     an entity at any point in time;
     - [+] your business logic consists of loosely coupled business entities that
     exchange events;
+    
+## Deployment Strategies
+
+- multiple service instances per host pattern;
+- service instance per host pattern;
+- serverless deployment;

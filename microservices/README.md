@@ -25,6 +25,28 @@
 
 ## API Gateway
 
+### Direct client‑to‑microservice communication
+
+- [-] the mismatch between the needs of the client and the fine‑grained APIs;
+- [-] makes the client code much more complex;
+- [-] some services might use protocols that are not web‑friendly;
+- [-] makes it difficult to refactor the microservices;
+
+### API gateway
+
+- is a server that is the single entry point into the system;
+- encapsulates the internal system architecture and provides an API that is tailored to each client;
+- might have other responsibilities:
+    - authentication;
+    - monitoring;
+    - load balancing
+    - caching;
+    - request shaping and management;
+    - static response handling;
+- [-] is yet another highly available component that must be developed, deployed, and managed;
+
+### Implementing
+
 // todo
 
 ## Service Discovery

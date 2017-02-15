@@ -47,7 +47,30 @@
 
 ### Implementing
 
-// todo
+##### Performance and Scalability
+
+- build the API Gateway on a platform that supports asynchronous, nonblocking I/O;
+
+##### Using a Reactive Programming Model
+
+- write API Gateway code in a declarative style using a reactive approach
+(e.g. `CompletableFuture` in Java 8)
+
+##### Service Invocation
+
+- use an asynchronous, messaging‑based mechanism (e.g. JMS);
+- use a synchronous mechanism (e.g. HTTP);
+- you might use multiple implementations of each style;
+
+##### Service Discovery
+
+- use to determine dynamically assigned locations of the service instances;
+
+##### Handling Partial Failures
+
+- try to return a part of the result;
+- return cached data if that was available;
+- stop cascading failures;
 
 ## Service Discovery
 
